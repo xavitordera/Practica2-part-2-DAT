@@ -122,10 +122,10 @@ getSession :: Read a => Text -> Handler (Maybe a)
 getSession name =  HandlerC $ \req st -> do
     let text = readt a in
         case text of 
-            Just param ->
-                pure(getSession_ param, st)
+            Just text ->
+                getSession_ (param)
             Nothing ->
-                getSession Nothing
+                pure(Nothing)
 -- END
     -- NOTA: Useu la funcio 'getSession_' i 'readt' (que parseja un text).
     error "Handler.getSession: A completar per l'estudiant"
@@ -134,20 +134,33 @@ getSession name =  HandlerC $ \req st -> do
 -- Retorna Nothing si l'atribut indicat no existeix o no te la sintaxis adequada.
 getSession_ :: Text -> Handler (Maybe Text)
 getSession_ name = HandlerC $ \req st -> do
-	pure (requestSession req, st)
-	
+    -- pure (requestSession req, st)
+    -- FIXME
+    let param = lookup name (requestSession req) in
+        case param of 
+            Just param -> 
+                pure (param)
+            Nothing -> 
+                pure (Nothing)
     error "Handler.getSession: A completar per l'estudiant"
 
 -- Fixa l'atribut de sessio indicat amb el nom i valor indicats.
 setSession :: Show a => Text -> a -> Handler ()
 setSession name value =
     -- NOTA: Useu les funcions 'setSession_' i 'showt' (que converteix a text).
+    -- FIXME
+    let param = showt value in
+        setSession_ (name, param)
+
     error "Handler.setSession: A completar per l'estudiant"
+
 
 -- Fixa l'atribut de sessio indicat amb el nom i valor indicats.
 setSession_ :: Text -> Text -> Handler ()
 setSession_ name value = HandlerC $ \ req st -> do
     let newsession = (name, value) : filter ((name /=) . fst) (hsSession st)
+    -- FIXME
+    mkSetCookieValue newsession 
     error "Handler.setSession: A completar per l'estudiant"
 
 -- Obte els parametres del contingut de la peticio.
