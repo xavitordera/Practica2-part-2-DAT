@@ -136,7 +136,7 @@ getSession_ :: Text -> Handler (Maybe Text)
 getSession_ name = HandlerC $ \req st -> do
     -- pure (requestSession req, st)
     -- FIXME
-    let param = lookupParam name req in
+    let param = U.lookupParam name req in
         case param of 
             Just param -> 
                 pure (param)
@@ -151,7 +151,6 @@ setSession name value =
     -- FIXME
     let param = showt value in
         setSession_ (name, param)
-        pure
 
     error "Handler.setSession: A completar per l'estudiant"
 
@@ -161,8 +160,8 @@ setSession_ :: Text -> Text -> Handler ()
 setSession_ name value = HandlerC $ \ req st -> do
     let newsession = (name, value) : filter ((name /=) . fst) (hsSession st) in
     -- FIXME
-        sesh <- mkSetCookieValue newsession 
-        pure ( mkSetCookieValue newsession, hsSetSession sesh )
+        sesh <- U.mkSetCookieValue newsession 
+        pure ( sesh, hsSetSession sesh st)
     error "Handler.setSession: A completar per l'estudiant"
 
 -- Obte els parametres del contingut de la peticio.
