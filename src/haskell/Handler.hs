@@ -120,7 +120,7 @@ getMethod = HandlerC $ \req st -> do
 getSession :: Read a => Text -> Handler (Maybe a)
 -- FIXME
 getSession name =  HandlerC $ \req st -> do
-    let text = readt a in
+    let text = readt name in
         case text of 
             Just text ->
                 getSession_ (param)
@@ -161,8 +161,8 @@ setSession_ :: Text -> Text -> Handler ()
 setSession_ name value = HandlerC $ \ req st -> do
     let newsession = (name, value) : filter ((name /=) . fst) (hsSession st) in
     -- FIXME
-        mkSetCookieValue newsession 
-        pure
+        sesh <- mkSetCookieValue newsession 
+        pure ( mkSetCookieValue newsession, hsSetSession sesh )
     error "Handler.setSession: A completar per l'estudiant"
 
 -- Obte els parametres del contingut de la peticio.
