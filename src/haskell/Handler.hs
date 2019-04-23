@@ -136,7 +136,7 @@ getSession_ :: Text -> Handler (Maybe Text)
 getSession_ name = HandlerC $ \req st -> do
     -- pure (requestSession req, st)
     -- FIXME
-    let param = lookup name (requestSession req) in
+    let param = lookupParam name req in
         case param of 
             Just param -> 
                 pure (param)
