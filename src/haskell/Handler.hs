@@ -62,8 +62,7 @@ instance Applicative Handler where
     --          pure  :: a -> Handler a
     --          (<*>) :: Handler (a -> b) -> Handler a -> Handler b
      --FIXME
-    pure x = HandlerC $ \ req st -> do
-	pure (x, st) 
+    pure x = HandlerC $ \ req st -> pure (x, st) 
     -- END
     HandlerC hf <*> HandlerC hx = HandlerC $ \ req st -> do
         ( f, st1 ) <- hf req st
@@ -138,17 +137,17 @@ getSession_ :: Text -> Handler (Maybe Text)
 getSession_ name = HandlerC $ \req st -> do
     -- pure (requestSession req, st)
     -- FIXME
-    let param = U.lookupParam name req in
-        pure (param, st)
+    let param = lookup name $ hsSession st 
+    pure (param, st)
     --error "Handler.getSession: A completar per l'estudiant"
 
 -- Fixa l'atribut de sessio indicat amb el nom i valor indicats.
 setSession :: Show a => Text -> a -> Handler ()
-setSession name value =
+setSession name value = setSession_ name $ showt value
     -- NOTA: Useu les funcions 'setSession_' i 'showt' (que converteix a text).
     -- FIXME
     --let param = (showt value) in
-    setSession_ (name, showt value)
+
 
     --error "Handler.setSession: A completar per l'estudiant"
 

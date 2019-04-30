@@ -3,7 +3,7 @@
 
 module Main
 where
-import App_prev
+import App
 
 import Network.Wai
 import Network.Wai.Handler.CGI(run)
